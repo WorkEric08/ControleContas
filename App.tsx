@@ -16,7 +16,7 @@ const THEME_KEY = 'billflow_theme_pref';
 const ONBOARDING_KEY = 'billflow_onboarding_complete';
 
 const TypingWelcome: React.FC<{ name: string }> = ({ name }) => {
-  const fullText = `BEM-VINDO, ${name}`;
+  const fullText = `VINDO, ${name}`;
   const [displayedText, setDisplayedText] = useState("");
   
   useEffect(() => {
@@ -249,7 +249,6 @@ const App: React.FC = () => {
       </AnimatePresence>
 
       <header className="max-w-7xl mx-auto pt-10 pb-8 mb-8 border-b border-slate-800/20 dark:border-slate-800/40 space-y-8">
-        {/* Row 1: Title and Buttons */}
         <div className="flex items-start justify-between">
           <div className="flex flex-col">
             <h1 className="text-3xl sm:text-4xl font-[900] dark:text-white text-slate-900 uppercase tracking-[-0.05em] mb-2.5">
@@ -287,7 +286,6 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Row 2: Actions */}
         <div className="flex items-center gap-3">
            <button 
             onClick={() => setIsHistoryModalOpen(true)}
