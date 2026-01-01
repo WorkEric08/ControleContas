@@ -251,7 +251,7 @@ const App: React.FC = () => {
       <header className="max-w-7xl mx-auto pt-10 pb-8 mb-8 border-b border-slate-800/20 dark:border-slate-800/40 space-y-8">
         <div className="flex items-start justify-between">
           <div className="flex flex-col">
-            <h1 className="text-3xl sm:text-4xl font-[900] dark:text-white text-slate-900 uppercase tracking-[-0.05em] mb-2.5">
+            <h1 className="text-3xl sm:text-4xl font-[900] text-blue-500 dark:text-blue-400 uppercase tracking-[-0.05em] mb-2.5">
               CONTROLE MENSAL
             </h1>
             <TypingWelcome name={user.username || "USUÁRIO"} />
