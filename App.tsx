@@ -16,7 +16,7 @@ const THEME_KEY = 'billflow_theme_pref';
 const ONBOARDING_KEY = 'billflow_onboarding_complete';
 
 const TypingWelcome: React.FC<{ name: string }> = ({ name }) => {
-  const fullText = `VINDO, ${name}`;
+  const fullText = `BEM-VINDO, ${name}`;
   const [displayedText, setDisplayedText] = useState("");
   
   useEffect(() => {
