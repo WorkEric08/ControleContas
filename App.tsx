@@ -319,7 +319,7 @@ const App: React.FC = () => {
             <TypingWelcome name={user.username || "USUÁRIO"} />
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
              <button 
               onClick={() => setIsSimulationModalOpen(true)}
               className="w-11 h-11 sm:w-12 sm:h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 transition-all shadow-xl active:scale-95"
@@ -356,24 +356,24 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4 w-full">
            <button 
             onClick={() => setIsHistoryModalOpen(true)}
-            className="bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 flex items-center gap-3 hover:border-emerald-500 transition-all active:scale-95 group shadow-sm"
+            className="flex-1 h-11 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-5 flex items-center justify-between gap-3 hover:border-emerald-500 transition-all active:scale-95 group shadow-sm min-w-0"
           >
-            <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.15em]">
+            <span className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.15em] whitespace-nowrap overflow-visible">
               {formatMonthName(selectedMonth)}
             </span>
-            <div className="text-slate-400 group-hover:text-emerald-500 transition-colors">
+            <div className="text-slate-400 group-hover:text-emerald-500 transition-colors shrink-0">
               <Icons.ChevronDown size={14} />
             </div>
           </button>
 
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] px-5 py-2 rounded-xl transition-all shadow-lg flex items-center gap-2 active:scale-95 uppercase tracking-widest"
+            className="flex-1 h-11 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] px-6 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95 uppercase tracking-widest min-w-0"
           >
-            <Icons.Plus size={14} /> Nova Categoria
+            <Icons.Plus size={14} /> <span className="whitespace-nowrap overflow-visible">Nova Categoria</span>
           </button>
         </div>
       </header>
@@ -419,60 +419,32 @@ const App: React.FC = () => {
 
       <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} user={user} onSave={saveProfile} />
       
-      {/* Simulation Center Modal */}
       <AnimatePresence>
         {isSimulationModalOpen && (
           <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }} 
-              className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" 
-              onClick={() => setIsSimulationModalOpen(false)} 
-            />
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setIsSimulationModalOpen(false)} />
+            <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden" >
               <div className="flex flex-col items-center mb-8 text-center">
                 <div className="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
                   <Icons.Sparkles size={32} />
                 </div>
                 <h2 className="text-xl font-black dark:text-white text-slate-900 uppercase tracking-widest">Simulation Center</h2>
-                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] mt-2 max-w-[200px]">
-                  Teste as regras de persistência de contas recorrentes
-                </p>
+                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] mt-2 max-w-[200px]">Teste as regras de persistência de contas recorrentes</p>
               </div>
-
               <div className="space-y-3">
-                <button 
-                  onClick={simulateNextMonth}
-                  className="w-full flex flex-col items-center gap-1 p-6 rounded-2xl bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-all active:scale-95 group shadow-xl shadow-emerald-500/20"
-                >
+                <button onClick={simulateNextMonth} className="w-full flex flex-col items-center gap-1 p-6 rounded-2xl bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-all active:scale-95 group shadow-xl shadow-emerald-500/20" >
                   <div className="flex items-center gap-2">
                     <Icons.Sparkles size={18} />
                     <span className="text-[12px] font-black uppercase tracking-widest">Simular Próximo Mês</span>
                   </div>
                   <span className="text-[9px] opacity-70 font-bold uppercase">Copia apenas itens com cadeado</span>
                 </button>
-
-                <button 
-                  onClick={deleteCurrentMonthData}
-                  className="w-full flex items-center justify-center gap-3 p-5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-95"
-                >
+                <button onClick={deleteCurrentMonthData} className="w-full flex items-center justify-center gap-3 p-5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-95" >
                   <Icons.Trash size={18} />
                   <span className="text-[11px] font-black uppercase tracking-widest">Apagar Mês Atual</span>
                 </button>
               </div>
-
-              <button 
-                onClick={() => setIsSimulationModalOpen(false)}
-                className="w-full mt-6 py-4 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-slate-600 transition-colors"
-              >
-                Fechar Painel
-              </button>
+              <button onClick={() => setIsSimulationModalOpen(false)} className="w-full mt-6 py-4 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-slate-600 transition-colors" >Fechar Painel</button>
             </motion.div>
           </div>
         )}
@@ -481,11 +453,7 @@ const App: React.FC = () => {
       <Modal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onConfirm={() => setIsHistoryModalOpen(false)} title="Histórico Financeiro">
         <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto custom-scrollbar pr-1">
           {availableMonths.map(mKey => (
-            <button
-              key={mKey}
-              onClick={() => handleSelectMonth(mKey)}
-              className={`w-full text-left px-5 py-4 rounded-xl transition-all flex justify-between items-center border ${selectedMonth === mKey ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
-            >
+            <button key={mKey} onClick={() => handleSelectMonth(mKey)} className={`w-full text-left px-5 py-4 rounded-xl transition-all flex justify-between items-center border ${selectedMonth === mKey ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`} >
               <span className="text-[12px] font-black uppercase tracking-wider">{formatMonthName(mKey)}</span>
               {mKey === realCurrentMonth && <span className="text-[8px] bg-emerald-500 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase">ATUAL</span>}
             </button>
@@ -493,45 +461,20 @@ const App: React.FC = () => {
         </div>
       </Modal>
 
-      <Modal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onConfirm={addCategory} 
-        title="Nova Categoria"
-        confirmClassName={newCategory.type === 'goal' 
-          ? "bg-blue-500 hover:bg-blue-400 shadow-lg shadow-blue-500/20" 
-          : "bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20"
-        }
-      >
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={addCategory} title="Nova Categoria" confirmClassName={newCategory.type === 'goal' ? "bg-blue-500 hover:bg-blue-400 shadow-lg shadow-blue-500/20" : "bg-emerald-500 hover:bg-emerald-400 shadow-lg shadow-emerald-500/20"} >
         <div className="space-y-6">
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Nome da Categoria</label>
-            <input 
-              type="text" 
-              placeholder="Ex: ALUGUEL" 
-              value={newCategory.name} 
-              onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} 
-              className={`w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 dark:text-white text-slate-900 focus:outline-none focus:ring-1 transition-all font-bold ${
-                newCategory.type === 'goal' 
-                  ? 'focus:ring-blue-500 focus:border-blue-500' 
-                  : 'focus:ring-emerald-500 focus:border-emerald-500'
-              }`}
-            />
+            <input type="text" placeholder="Ex: ALUGUEL" value={newCategory.name} onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} className={`w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 dark:text-white text-slate-900 focus:outline-none focus:ring-1 transition-all font-bold ${newCategory.type === 'goal' ? 'focus:ring-blue-500 focus:border-blue-500' : 'focus:ring-emerald-500 focus:border-emerald-500'}`} />
           </div>
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tipo de Controle</label>
             <div className="grid grid-cols-2 gap-3">
-              <button 
-                onClick={() => setNewCategory({ ...newCategory, type: 'expense' })} 
-                className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${newCategory.type === 'expense' ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-400'}`}
-              >
+              <button onClick={() => setNewCategory({ ...newCategory, type: 'expense' })} className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${newCategory.type === 'expense' ? 'bg-emerald-500/10 border-emerald-500 text-emerald-500' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-400'}`} >
                 <Icons.Receipt />
                 <span className="text-[10px] font-black uppercase">Contas</span>
               </button>
-              <button 
-                onClick={() => setNewCategory({ ...newCategory, type: 'goal' })} 
-                className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${newCategory.type === 'goal' ? 'bg-blue-500/10 border-blue-500 text-blue-400' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-400'}`}
-              >
+              <button onClick={() => setNewCategory({ ...newCategory, type: 'goal' })} className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${newCategory.type === 'goal' ? 'bg-blue-500/10 border-blue-500 text-blue-400' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-400'}`} >
                 <Icons.Target />
                 <span className="text-[10px] font-black uppercase">Meta</span>
               </button>

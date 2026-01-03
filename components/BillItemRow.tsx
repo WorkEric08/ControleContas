@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { BillItem } from '../types';
 import { Icons } from '../constants';
@@ -120,7 +121,7 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
           </div>
           <div className={`flex items-center gap-2 text-red-500 transition-opacity ${swipeOffset < -20 ? 'opacity-100' : 'opacity-0'}`}>
             <span className="text-[10px] font-black uppercase tracking-widest">Excluir</span>
-            <Icons.Trash />
+            <Icons.Trash size={18} />
           </div>
         </div>
       )}
@@ -230,14 +231,14 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
                 onClick={(e) => { e.stopPropagation(); !item.isPaid && onMove?.('up'); }} 
                 className={`p-1 rounded transition-all ${isFirst || item.isPaid ? 'opacity-10 cursor-default' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}
               >
-                <Icons.ChevronUp size={22} />
+                <Icons.ChevronUp size={20} />
               </button>
               <button 
                 disabled={isLast || item.isPaid} 
                 onClick={(e) => { e.stopPropagation(); !item.isPaid && onMove?.('down'); }} 
                 className={`p-1 rounded transition-all ${isLast || item.isPaid ? 'opacity-10 cursor-default' : 'text-slate-500 hover:text-white hover:bg-slate-800'}`}
               >
-                <Icons.ChevronDown size={22} />
+                <Icons.ChevronDown size={20} />
               </button>
             </div>
 
@@ -247,14 +248,14 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
                 onClick={() => !item.isPaid && onUpdate({ isLocked: !item.isLocked })}
                 className={`p-2 rounded-lg transition-all ${item.isPaid ? 'opacity-10 cursor-default' : (item.isLocked ? 'text-amber-500 bg-amber-500/10' : 'text-slate-700 hover:text-slate-300')}`}
               >
-                {item.isLocked ? <Icons.Lock size={24} /> : <Icons.Unlock size={24} />}
+                {item.isLocked ? <Icons.Lock size={18} /> : <Icons.Unlock size={18} />}
               </button>
               <button 
                 disabled={item.isPaid}
                 onClick={(e) => { e.stopPropagation(); !item.isPaid && onDelete(); }}
                 className={`p-2 rounded-lg transition-all ${item.isPaid ? 'opacity-10 cursor-default' : 'text-slate-700 hover:text-red-500 hover:bg-red-500/10'}`}
               >
-                <Icons.Trash size={24} />
+                <Icons.Trash size={18} />
               </button>
             </div>
           </div>
