@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import { BillCategory, BillItem, MonthData, UserProfile } from './types';
 import { Icons } from './constants';
@@ -49,6 +49,7 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isSimulationModalOpen, setIsSimulationModalOpen] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [newCategory, setNewCategory] = useState({ name: '', type: 'expense' as 'expense' | 'goal' });
@@ -68,6 +69,62 @@ const App: React.FC = () => {
     }
     return { name: "", username: "", age: "", avatar: "" };
   });
+
+  const seedMonthData = useCallback((targetMonth: string, currentData: MonthData): MonthData => {
+    if (currentData[targetMonth] && currentData[targetMonth].length > 0) {
+      return currentData;
+    }
+
+    const existingMonths = Object.keys(currentData).sort();
+    const prevMonthKey = existingMonths.filter(m => m < targetMonth).reverse()[0];
+
+    if (!prevMonthKey) return currentData;
+
+    const prevCategories = currentData[prevMonthKey];
+    const newCategories: BillCategory[] = prevCategories.map(cat => ({
+      ...cat,
+      items: cat.items
+        .filter(item => item.isLocked)
+        .map(item => ({
+          ...item,
+          id: crypto.randomUUID(),
+          isPaid: false,
+          createdAt: Date.now()
+        }))
+    }));
+
+    return {
+      ...currentData,
+      [targetMonth]: newCategories
+    };
+  }, []);
+
+  const simulateNextMonth = () => {
+    const [year, month] = selectedMonth.split('-').map(Number);
+    let nextYear = year;
+    let nextMonth = month + 1;
+    if (nextMonth > 12) {
+      nextMonth = 1;
+      nextYear += 1;
+    }
+    const nextMonthKey = `${nextYear}-${String(nextMonth).padStart(2, '0')}`;
+    
+    setMonthData(prev => seedMonthData(nextMonthKey, prev));
+    setSelectedMonth(nextMonthKey);
+    setIsSimulationModalOpen(false);
+  };
+
+  const deleteCurrentMonthData = () => {
+    if (confirm(`Deseja apagar permanentemente os dados de ${formatMonthName(selectedMonth)}?`)) {
+      setMonthData(prev => {
+        const newData = { ...prev };
+        delete newData[selectedMonth];
+        return newData;
+      });
+      setSelectedMonth(realCurrentMonth);
+      setIsSimulationModalOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -103,7 +160,10 @@ const App: React.FC = () => {
     const savedData = localStorage.getItem(STORAGE_KEY);
     if (savedData) {
       try {
-        const data: MonthData = JSON.parse(savedData);
+        let data: MonthData = JSON.parse(savedData);
+        if (!data[realCurrentMonth]) {
+          data = seedMonthData(realCurrentMonth, data);
+        }
         setMonthData(data);
       } catch (e) {
         console.error("Error loading data", e);
@@ -114,12 +174,10 @@ const App: React.FC = () => {
     if (!onboardingComplete) {
       setShowOnboarding(true);
     }
-  }, []);
+  }, [realCurrentMonth, seedMonthData]);
 
   useEffect(() => {
-    if (Object.keys(monthData).length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(monthData));
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(monthData));
   }, [monthData]);
 
   const completeOnboarding = () => {
@@ -132,6 +190,14 @@ const App: React.FC = () => {
       ...prev,
       [selectedMonth]: newCategories
     }));
+  };
+
+  const handleSelectMonth = (mKey: string) => {
+    if (!monthData[mKey]) {
+      setMonthData(prev => seedMonthData(mKey, prev));
+    }
+    setSelectedMonth(mKey);
+    setIsHistoryModalOpen(false);
   };
 
   const onUpdateCategory = (categoryId: string, updates: Partial<BillCategory>) => {
@@ -254,6 +320,14 @@ const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3">
+             <button 
+              onClick={() => setIsSimulationModalOpen(true)}
+              className="w-11 h-11 sm:w-12 sm:h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-slate-400 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 transition-all shadow-xl active:scale-95"
+              title="Simulation Center"
+            >
+              <Icons.Settings size={22} />
+            </button>
+
             <button 
               onClick={() => setIsProfileModalOpen(true)}
               className="w-11 h-11 sm:w-12 sm:h-12 bg-white dark:bg-slate-900 rounded-2xl flex items-center justify-center text-slate-500 border border-slate-200 dark:border-slate-800 hover:border-emerald-500 transition-all overflow-hidden shadow-xl active:scale-95"
@@ -345,12 +419,71 @@ const App: React.FC = () => {
 
       <ProfileModal isOpen={isProfileModalOpen} onClose={() => setIsProfileModalOpen(false)} user={user} onSave={saveProfile} />
       
+      {/* Simulation Center Modal */}
+      <AnimatePresence>
+        {isSimulationModalOpen && (
+          <div className="fixed inset-0 z-[150] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" 
+              onClick={() => setIsSimulationModalOpen(false)} 
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden"
+            >
+              <div className="flex flex-col items-center mb-8 text-center">
+                <div className="w-16 h-16 bg-emerald-500/10 text-emerald-500 rounded-2xl flex items-center justify-center mb-4">
+                  <Icons.Sparkles size={32} />
+                </div>
+                <h2 className="text-xl font-black dark:text-white text-slate-900 uppercase tracking-widest">Simulation Center</h2>
+                <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] mt-2 max-w-[200px]">
+                  Teste as regras de persistência de contas recorrentes
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <button 
+                  onClick={simulateNextMonth}
+                  className="w-full flex flex-col items-center gap-1 p-6 rounded-2xl bg-emerald-500 text-slate-950 hover:bg-emerald-400 transition-all active:scale-95 group shadow-xl shadow-emerald-500/20"
+                >
+                  <div className="flex items-center gap-2">
+                    <Icons.Sparkles size={18} />
+                    <span className="text-[12px] font-black uppercase tracking-widest">Simular Próximo Mês</span>
+                  </div>
+                  <span className="text-[9px] opacity-70 font-bold uppercase">Copia apenas itens com cadeado</span>
+                </button>
+
+                <button 
+                  onClick={deleteCurrentMonthData}
+                  className="w-full flex items-center justify-center gap-3 p-5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-red-500 hover:bg-red-500 hover:text-white transition-all active:scale-95"
+                >
+                  <Icons.Trash size={18} />
+                  <span className="text-[11px] font-black uppercase tracking-widest">Apagar Mês Atual</span>
+                </button>
+              </div>
+
+              <button 
+                onClick={() => setIsSimulationModalOpen(false)}
+                className="w-full mt-6 py-4 text-slate-400 text-[10px] font-black uppercase tracking-widest hover:text-slate-600 transition-colors"
+              >
+                Fechar Painel
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <Modal isOpen={isHistoryModalOpen} onClose={() => setIsHistoryModalOpen(false)} onConfirm={() => setIsHistoryModalOpen(false)} title="Histórico Financeiro">
         <div className="grid grid-cols-1 gap-2 max-h-[400px] overflow-y-auto custom-scrollbar pr-1">
           {availableMonths.map(mKey => (
             <button
               key={mKey}
-              onClick={() => { setSelectedMonth(mKey); setIsHistoryModalOpen(false); }}
+              onClick={() => handleSelectMonth(mKey)}
               className={`w-full text-left px-5 py-4 rounded-xl transition-all flex justify-between items-center border ${selectedMonth === mKey ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-slate-50 dark:bg-slate-950 border-slate-200 dark:border-slate-800 text-slate-500'}`}
             >
               <span className="text-[12px] font-black uppercase tracking-wider">{formatMonthName(mKey)}</span>
