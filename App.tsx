@@ -373,7 +373,7 @@ const App: React.FC = () => {
             onClick={() => setIsModalOpen(true)}
             className="flex-1 h-11 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] px-6 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95 uppercase tracking-widest min-w-0"
           >
-            <Icons.Plus size={14} /> <span className="whitespace-nowrap overflow-visible">Nova Categoria</span>
+            <span className="text-[14px] leading-none">+</span> <span className="whitespace-nowrap overflow-visible">Nova Categoria</span>
           </button>
         </div>
       </header>
