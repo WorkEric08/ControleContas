@@ -165,7 +165,7 @@ const App: React.FC = () => {
     if (!newCategory.name.trim()) return;
     const newCat: BillCategory = {
       id: crypto.randomUUID(),
-      name: newCategory.name.toUpperCase(),
+      name: newCategory.name,
       type: newCategory.type,
       items: [],
       budget: newCategory.type === 'goal' ? 0 : undefined,
@@ -391,7 +391,7 @@ const App: React.FC = () => {
         <div className="space-y-6">
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Nome da Categoria</label>
-            <input type="text" placeholder="Ex: ALUGUEL" value={newCategory.name} onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} className={`w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 dark:text-white text-slate-900 focus:outline-none focus:ring-1 transition-all font-bold ${newCategory.type === 'goal' ? 'focus:ring-blue-500 focus:border-blue-500' : 'focus:ring-emerald-500 focus:border-emerald-500'}`} />
+            <input type="text" placeholder="Ex: Aluguel" value={newCategory.name} onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })} className={`w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-3 dark:text-white text-slate-900 focus:outline-none focus:ring-1 transition-all font-bold ${newCategory.type === 'goal' ? 'focus:ring-blue-500 focus:border-blue-500' : 'focus:ring-emerald-500 focus:border-emerald-500'}`} />
           </div>
           <div className="space-y-2">
             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tipo de Controle</label>

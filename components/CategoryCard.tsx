@@ -38,9 +38,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   const [isEditingName, setIsEditingName] = useState(false);
   const [inputCategoryName, setInputCategoryName] = useState(category.name);
 
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    const val = parseFloat(itemValue.replace(',', '.')) || 0;
+  const handleAdd = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    const val = parseFloat(itemValue.replace(/\D/g, '')) / 100 || 0;
     if (itemName.trim()) {
       onAddItem(itemName, val, itemDate || undefined);
       setItemName('');
@@ -52,7 +52,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
   const handleNameBlur = () => {
     if (inputCategoryName.trim()) {
-      onUpdateCategory({ name: inputCategoryName.trim().toUpperCase() });
+      onUpdateCategory({ name: inputCategoryName.trim() });
     } else {
       setInputCategoryName(category.name);
     }
@@ -83,18 +83,28 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   const accentColorClass = isGoal ? 'text-blue-500' : 'text-emerald-500';
   const accentBgClass = isGoal ? 'bg-blue-500' : 'bg-emerald-500';
 
+  // Formatação de moeda no input
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (!value) {
+      setItemValue('');
+      return;
+    }
+    const val = parseInt(value, 10) / 100;
+    setItemValue(new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2 }).format(val));
+  };
+
   return (
     <div className="bg-[#0c121e] border border-slate-800/60 rounded-2xl shadow-2xl flex flex-col h-full relative overflow-hidden select-none transition-all hover:border-slate-700/80">
       
-      {/* Bandeira Superior Direita - Mantida com z-index alto */}
+      {/* Bandeira Superior Direita */}
       <div className={`absolute top-0 right-0 px-8 py-2.5 rounded-bl-3xl z-10 ${accentBgClass} text-slate-950 font-black text-[11px] uppercase tracking-[0.2em]`}>
         {isGoal ? 'Meta' : 'Contas'}
       </div>
 
-      {/* pt-16 para dar mais espaço ao indicador de Contas/Meta conforme solicitado */}
       <div className="p-7 pt-16 flex flex-col h-full">
-        {/* Header - ml-auto nos botões garante que eles fiquem sempre à direita */}
-        <div className="flex items-center mb-4 gap-4">
+        {/* Header */}
+        <div className="flex items-center mb-6 gap-4">
           <div className="flex-1 min-w-0">
             {isEditingName ? (
               <input 
@@ -104,71 +114,71 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                 onChange={(e) => setInputCategoryName(e.target.value)}
                 onBlur={handleNameBlur}
                 onKeyDown={(e) => e.key === 'Enter' && handleNameBlur()}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-xl text-white focus:outline-none w-full font-black uppercase tracking-tight"
+                className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-lg text-white focus:outline-none w-full font-black tracking-tight"
               />
             ) : (
               <h3 
                 onClick={() => setIsEditingName(true)}
-                className={`font-black text-2xl truncate cursor-pointer hover:opacity-80 transition-opacity ${accentColorClass} uppercase tracking-tight`}
+                className={`font-black text-xl truncate cursor-pointer hover:opacity-80 transition-opacity ${accentColorClass} tracking-tight`}
               >
                 {category.name}
               </h3>
             )}
           </div>
 
-          <div className="flex items-center gap-1 shrink-0 ml-auto pr-2">
-             <div className="flex items-center gap-0.5 mr-1">
-              <button disabled={isFirst} onClick={() => onMove?.('up')} className={`p-1 transition-all ${isFirst ? 'opacity-10 cursor-default' : 'text-slate-600 hover:text-white'}`}>
+          <div className="flex items-center gap-1 shrink-0 ml-auto">
+             <div className="flex items-center gap-0.5 mr-1 opacity-30 hover:opacity-100 transition-opacity">
+              <button disabled={isFirst} onClick={() => onMove?.('up')} className={`p-1 transition-all ${isFirst ? 'opacity-10 cursor-default' : 'text-slate-500 hover:text-white'}`}>
                 <Icons.ChevronUp size={16} />
               </button>
-              <button disabled={isLast} onClick={() => onMove?.('down')} className={`p-1 transition-all ${isLast ? 'opacity-10 cursor-default' : 'text-slate-600 hover:text-white'}`}>
+              <button disabled={isLast} onClick={() => onMove?.('down')} className={`p-1 transition-all ${isLast ? 'opacity-10 cursor-default' : 'text-slate-500 hover:text-white'}`}>
                 <Icons.ChevronDown size={16} />
               </button>
             </div>
 
-            <div className="flex items-center gap-1.5 border-l border-slate-800/50 pl-2">
+            <div className="flex items-center gap-2 border-l border-slate-800/50 pl-2">
               <button 
                 onClick={toggleStats} 
-                className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${isStatsVisible ? `${accentBgClass}/10 ${accentColorClass}` : 'bg-slate-900/50 text-slate-600 hover:text-white'}`}
+                className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all ${isStatsVisible ? `${accentBgClass}/10 ${accentColorClass}` : 'bg-slate-900/50 text-slate-600 hover:text-white'}`}
                 title="Estatísticas"
               >
-                <Icons.Chart size={16} />
+                <Icons.Chart size={19} />
               </button>
               
               <button 
                 onClick={() => setIsFormOpen(!isFormOpen)} 
-                className={`w-8 h-8 rounded-lg transition-all flex items-center justify-center ${
+                className={`w-9 h-9 rounded-xl transition-all flex items-center justify-center ${
                   isFormOpen 
                     ? `${accentBgClass}/10 ${accentColorClass}` 
                     : 'bg-slate-900/50 text-slate-600 hover:text-white'
                 }`}
                 title="Adicionar Item"
               >
-                <Icons.Plus size={18} />
+                <Icons.Plus size={22} />
               </button>
               
               <button 
                 onClick={onDelete} 
-                className="w-8 h-8 rounded-lg bg-slate-900/50 text-slate-600 hover:text-red-500 transition-all flex items-center justify-center"
+                className="w-9 h-9 rounded-xl bg-slate-900/50 text-slate-600 hover:text-red-500 transition-all flex items-center justify-center"
                 title="Excluir Categoria"
               >
-                <Icons.Trash size={16} />
+                <Icons.Trash size={19} />
               </button>
             </div>
           </div>
         </div>
 
-        {/* PROGRESSO - Espaçamentos compactos (mb-4) */}
+        {/* PROGRESSO - Borda suavizada border-slate-700/40 */}
         <AnimatePresence initial={false}>
           {isStatsVisible && (
             <motion.div 
               initial={{ height: 0, opacity: 0, marginBottom: 0 }}
-              animate={{ height: 'auto', opacity: 1, marginBottom: 16 }}
+              animate={{ height: 'auto', opacity: 1, marginBottom: 20 }}
               exit={{ height: 0, opacity: 0, marginBottom: 0 }}
-              className="bg-[#050912]/60 border border-slate-800/40 rounded-2xl p-5 overflow-hidden"
+              className="bg-[#050912]/60 border border-slate-700/40 rounded-2xl p-5 px-3 -mx-[15px] overflow-hidden"
             >
-              <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1">Progresso</p>
-              <h4 className={`text-xl font-black mb-3 ${accentColorClass}`}>{progressPercent}%</h4>
+              <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.2em] mb-1 pl-1">Progresso</p>
+              <h4 className={`text-xl font-black mb-3 pl-1 ${accentColorClass}`}>{progressPercent}%</h4>
               <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
                 <motion.div initial={{ width: 0 }} animate={{ width: `${progressPercent}%` }} className={`h-full ${accentBgClass} shadow-[0_0_15px_rgba(34,197,94,0.1)]`} />
               </div>
@@ -179,18 +189,18 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         {/* FORMULÁRIO DE ADIÇÃO */}
         <AnimatePresence>
           {isFormOpen && (
-            <motion.form 
+            <motion.div 
               initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
-              onSubmit={handleAdd} className="bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-4 space-y-3"
+              className="bg-slate-900/30 p-3 rounded-2xl border border-slate-700/40 mb-6 space-y-2"
             >
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 w-full items-center">
                 <input 
                   autoFocus 
                   type="text" 
                   placeholder="Nome do item..." 
                   value={itemName} 
                   onChange={(e) => setItemName(e.target.value)} 
-                  className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white font-bold focus:outline-none focus:border-slate-600 transition-colors placeholder:text-slate-700" 
+                  className="flex-1 min-w-0 bg-slate-950 border border-transparent focus:border-slate-700 rounded-xl px-4 py-3 text-[13px] text-white font-bold focus:outline-none transition-all placeholder:text-slate-800" 
                 />
                 <div className="shrink-0">
                   <CustomDatePicker 
@@ -200,10 +210,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                       <button 
                         type="button" 
                         onClick={open} 
-                        className={`w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center transition-all hover:border-slate-600 group relative ${itemDate && itemDate !== 'none' ? accentColorClass : 'text-slate-500'}`}
-                        title={itemDate && itemDate !== 'none' ? new Date(itemDate + 'T00:00:00').toLocaleDateString('pt-BR') : 'Vencimento'}
+                        className={`w-11 h-11 rounded-xl bg-slate-950 border border-transparent focus:border-slate-700 hover:border-slate-700/30 flex items-center justify-center transition-all group relative ${itemDate && itemDate !== 'none' ? accentColorClass : 'text-slate-700'}`}
                       >
-                        <Icons.Calendar size={20} />
+                        <Icons.Calendar size={18} />
                         {itemDate && itemDate !== 'none' && (
                           <div className={`absolute top-1 right-1 w-2 h-2 rounded-full ${accentBgClass} animate-pulse shadow-sm`}></div>
                         )}
@@ -213,22 +222,24 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                 </div>
               </div>
               
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 w-full items-center">
                 <input 
                   type="text" 
                   placeholder="Valor R$ 0,00" 
                   value={itemValue} 
-                  onChange={(e) => setItemValue(e.target.value)} 
-                  className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white font-mono font-bold focus:outline-none focus:border-slate-600 transition-colors placeholder:text-slate-700" 
+                  onChange={handleValueChange}
+                  onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+                  className="flex-1 min-w-0 bg-slate-950 border border-transparent focus:border-slate-700 rounded-xl px-4 py-3 text-[13px] text-white font-mono font-bold focus:outline-none transition-all placeholder:text-slate-800" 
                 />
                 <button 
-                  type="submit" 
-                  className={`w-12 h-12 shrink-0 rounded-xl ${accentBgClass} text-slate-950 flex items-center justify-center transition-all shadow-lg hover:brightness-110 active:scale-90`}
+                  type="button"
+                  onClick={() => handleAdd()}
+                  className={`w-11 h-11 shrink-0 rounded-xl ${accentBgClass} text-slate-950 flex items-center justify-center transition-all shadow-lg hover:brightness-110 active:scale-90`}
                 >
-                  <Icons.Plus size={24} />
+                  <Icons.Plus size={22} />
                 </button>
               </div>
-            </motion.form>
+            </motion.div>
           )}
         </AnimatePresence>
 
@@ -241,7 +252,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                   <Icons.Plus size={28} />
                 </button>
                 <h4 className="text-slate-600 font-black text-xs uppercase tracking-[0.2em]">Vazio</h4>
-                <p className="text-slate-700 text-[9px] font-bold uppercase mt-1">Toque para adicionar um item</p>
+                <p className="text-slate-700 text-[9px] font-bold uppercase mt-1 text-center">Toque para adicionar um item</p>
               </motion.div>
             ) : (
               <div className="space-y-3 custom-scrollbar overflow-y-auto max-h-[400px] pr-1">
