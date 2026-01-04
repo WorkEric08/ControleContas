@@ -1,3 +1,4 @@
+
 export interface BillItem {
   id: string;
   text: string;
@@ -14,6 +15,7 @@ export interface BillCategory {
   items: BillItem[];
   budget?: number;
   type: 'expense' | 'goal';
+  showStats?: boolean; // Persiste se a barra de progresso deve ser exibida
 }
 
 export interface MonthData {
