@@ -83,7 +83,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   const accentColorClass = isGoal ? 'text-blue-500' : 'text-emerald-500';
   const accentBgClass = isGoal ? 'bg-blue-500' : 'bg-emerald-500';
 
-  // Formatação de moeda no input
   const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let value = e.target.value.replace(/\D/g, '');
     if (!value) {
@@ -97,36 +96,37 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   return (
     <div className="bg-[#0c121e] border border-slate-800/60 rounded-2xl shadow-2xl flex flex-col h-full relative overflow-hidden select-none transition-all hover:border-slate-700/80">
       
+      {/* Título no Canto Superior Esquerdo - Fonte aumentada para text-base */}
+      <div className="absolute top-0 left-0 z-10 px-5 py-2.5 max-w-[65%]">
+        {isEditingName ? (
+          <input 
+            autoFocus
+            type="text"
+            value={inputCategoryName}
+            onChange={(e) => setInputCategoryName(e.target.value)}
+            onBlur={handleNameBlur}
+            onKeyDown={(e) => e.key === 'Enter' && handleNameBlur()}
+            className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-0.5 text-base text-white focus:outline-none w-full font-black tracking-tight"
+          />
+        ) : (
+          <h3 
+            onClick={() => setIsEditingName(true)}
+            className={`font-black text-base truncate cursor-pointer hover:opacity-80 transition-opacity ${accentColorClass} tracking-tight uppercase`}
+          >
+            {category.name}
+          </h3>
+        )}
+      </div>
+
       {/* Bandeira Superior Direita */}
-      <div className={`absolute top-0 right-0 px-8 py-2.5 rounded-bl-3xl z-10 ${accentBgClass} text-slate-950 font-black text-[11px] uppercase tracking-[0.2em]`}>
+      <div className={`absolute top-0 right-0 px-5 py-1.5 rounded-bl-2xl z-10 ${accentBgClass} text-slate-950 font-black text-[10px] uppercase tracking-[0.2em]`}>
         {isGoal ? 'Meta' : 'Contas'}
       </div>
 
-      <div className="p-7 pt-16 flex flex-col h-full">
-        {/* Header */}
-        <div className="flex items-center mb-6 gap-4">
-          <div className="flex-1 min-w-0">
-            {isEditingName ? (
-              <input 
-                autoFocus
-                type="text"
-                value={inputCategoryName}
-                onChange={(e) => setInputCategoryName(e.target.value)}
-                onBlur={handleNameBlur}
-                onKeyDown={(e) => e.key === 'Enter' && handleNameBlur()}
-                className="bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-lg text-white focus:outline-none w-full font-black tracking-tight"
-              />
-            ) : (
-              <h3 
-                onClick={() => setIsEditingName(true)}
-                className={`font-black text-xl truncate cursor-pointer hover:opacity-80 transition-opacity ${accentColorClass} tracking-tight`}
-              >
-                {category.name}
-              </h3>
-            )}
-          </div>
-
-          <div className="flex items-center gap-1 shrink-0 ml-auto">
+      <div className="p-7 pt-12 flex flex-col h-full">
+        {/* Header (Ações) */}
+        <div className="flex items-center mb-6 justify-end">
+          <div className="flex items-center gap-1 shrink-0">
              <div className="flex items-center gap-0.5 mr-1 opacity-30 hover:opacity-100 transition-opacity">
               <button disabled={isFirst} onClick={() => onMove?.('up')} className={`p-1 transition-all ${isFirst ? 'opacity-10 cursor-default' : 'text-slate-500 hover:text-white'}`}>
                 <Icons.ChevronUp size={16} />
@@ -168,7 +168,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           </div>
         </div>
 
-        {/* PROGRESSO - Borda suavizada border-slate-700/40 */}
+        {/* PROGRESSO */}
         <AnimatePresence initial={false}>
           {isStatsVisible && (
             <motion.div 
