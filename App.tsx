@@ -259,7 +259,6 @@ const App: React.FC = () => {
   };
 
   const currentMonthLabel = formatMonthName(selectedMonth);
-  const isMonthLabelLong = currentMonthLabel.length > 15;
 
   return (
     <div className={`min-h-screen pb-20 px-4 sm:px-8 transition-colors duration-300 ${theme === 'dark' ? 'text-slate-200' : 'text-slate-800'}`}>
@@ -312,12 +311,10 @@ const App: React.FC = () => {
         <div className="flex items-center gap-4 w-full">
            <button 
             onClick={() => setIsHistoryModalOpen(true)}
-            className="flex-[1.8] h-11 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl px-4 flex items-center justify-between gap-1 hover:border-emerald-500 transition-all active:scale-95 group shadow-sm min-w-0"
+            className="flex-1 h-11 bg-[#0c121e] border border-slate-800/60 rounded-xl px-4 flex items-center justify-between gap-1 hover:border-emerald-500 transition-all active:scale-95 group shadow-sm min-w-0"
           >
             <span 
-              className={`flex-1 font-black text-emerald-500 uppercase tracking-wider text-left whitespace-nowrap transition-all duration-300 ${
-                isMonthLabelLong ? 'text-[10px] sm:text-[11px]' : 'text-[11px]'
-              }`}
+              className="flex-1 font-black text-emerald-500 uppercase tracking-wider text-left whitespace-nowrap text-[11px]"
             >
               {currentMonthLabel}
             </span>
@@ -328,9 +325,9 @@ const App: React.FC = () => {
 
           <button 
             onClick={() => setIsModalOpen(true)}
-            className="flex-none h-11 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] px-6 rounded-xl transition-all shadow-lg flex items-center justify-center gap-3 active:scale-95 uppercase tracking-widest min-w-0"
+            className="flex-none h-11 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-[10px] px-4 sm:px-6 rounded-xl transition-all shadow-lg flex items-center justify-center gap-2 sm:gap-3 active:scale-95 uppercase tracking-widest min-w-0"
           >
-            <span className="text-[14px] leading-none font-black">+</span> <span className="whitespace-nowrap">Nova Categoria</span>
+            <span className="whitespace-nowrap">+ Nova Categoria</span>
           </button>
         </div>
       </header>
