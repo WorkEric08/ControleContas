@@ -96,7 +96,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   return (
     <div className="bg-[#0c121e] border border-slate-800/60 rounded-2xl shadow-2xl flex flex-col h-full relative overflow-hidden select-none transition-all hover:border-slate-700/80">
       
-      {/* Título no Canto Superior Esquerdo - Fonte aumentada para text-base */}
+      {/* Título no Canto Superior Esquerdo */}
       <div className="absolute top-0 left-0 z-10 px-5 py-2.5 max-w-[65%]">
         {isEditingName ? (
           <input 
@@ -129,10 +129,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           <div className="flex items-center gap-1 shrink-0">
              <div className="flex items-center gap-0.5 mr-1 opacity-30 hover:opacity-100 transition-opacity">
               <button disabled={isFirst} onClick={() => onMove?.('up')} className={`p-1 transition-all ${isFirst ? 'opacity-10 cursor-default' : 'text-slate-500 hover:text-white'}`}>
-                <Icons.ChevronUp size={16} />
+                <Icons.ChevronUp size={24} />
               </button>
               <button disabled={isLast} onClick={() => onMove?.('down')} className={`p-1 transition-all ${isLast ? 'opacity-10 cursor-default' : 'text-slate-500 hover:text-white'}`}>
-                <Icons.ChevronDown size={16} />
+                <Icons.ChevronDown size={24} />
               </button>
             </div>
 
