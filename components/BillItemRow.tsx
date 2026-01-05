@@ -78,7 +78,7 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
       {/* Barra de Status Lateral */}
       <div className={`absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full ${accentBg}`}></div>
 
-      {/* 1. Título da Conta - Aumentado para 14px e margem zerada */}
+      {/* 1. Título da Conta - Agora em Slate-400 (Cinza) */}
       <div className="w-full mb-0">
         {isEditingText ? (
           <input 
@@ -88,12 +88,12 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
             onChange={(e) => setInputText(e.target.value)} 
             onBlur={handleTextBlur} 
             onKeyDown={(e) => e.key === 'Enter' && handleTextBlur()}
-            className="bg-slate-900 text-[14px] text-white border border-transparent focus:border-slate-700 px-2 py-0.5 rounded-lg w-full focus:outline-none transition-all font-black uppercase tracking-tight" 
+            className="bg-slate-900 text-[15px] text-white border border-transparent focus:border-slate-700 px-2 py-0.5 rounded-lg w-full focus:outline-none transition-all font-black uppercase tracking-tight" 
           />
         ) : (
           <p 
             onClick={() => !item.isPaid && setIsEditingText(true)} 
-            className={`text-[14px] font-black uppercase tracking-tight truncate w-full py-0.5 pl-2.5 ${item.isPaid ? 'line-through text-slate-600' : 'text-white cursor-text hover:text-slate-300 transition-colors'}`}
+            className={`text-[15px] font-black uppercase tracking-tight truncate w-full py-0.5 pl-2.5 ${item.isPaid ? 'line-through text-slate-600' : 'text-slate-400 cursor-text hover:text-slate-200 transition-colors'}`}
           >
             {item.text}
           </p>
@@ -103,10 +103,10 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
       {/* 2. Área de Conteúdo */}
       <div className="flex items-center gap-2 w-full">
         
-        {/* Checklist - Movido mais para a direita com ml-2.5 */}
+        {/* Checklist */}
         <button 
           onClick={() => onUpdate({ isPaid: !item.isPaid })}
-          className={`w-6 h-6 ml-2.5 rounded-lg border-2 transition-all flex items-center justify-center shrink-0 ${
+          className={`w-6 h-6 ml-3.5 rounded-lg border-2 transition-all flex items-center justify-center shrink-0 ${
             item.isPaid 
               ? (isGoal ? 'bg-blue-500 border-blue-500 text-slate-950' : 'bg-emerald-500 border-emerald-500 text-slate-950') 
               : 'border-slate-700 bg-slate-900/40 hover:border-slate-500'
@@ -116,7 +116,7 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
         </button>
 
         {/* Bloco Central */}
-        <div className="flex-1 min-w-0 flex flex-col -mt-1">
+        <div className="flex-1 min-w-0 flex flex-col -mt-1.5">
           <div className="flex items-center justify-between">
             <div className="flex-1">
               {isEditingValue ? (
@@ -127,12 +127,12 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
                   onChange={handleValueChange} 
                   onBlur={handleValueBlur} 
                   onKeyDown={(e) => e.key === 'Enter' && handleValueBlur()}
-                  className={`bg-slate-900 border border-transparent focus:border-slate-700 rounded-lg px-2 py-0.5 text-[18px] font-black w-full focus:outline-none transition-all ${accentColor}`} 
+                  className={`bg-slate-900 border border-transparent focus:border-slate-700 rounded-lg px-2 py-0.5 text-[20px] font-black w-full focus:outline-none transition-all ${accentColor}`} 
                 />
               ) : (
                 <span 
                   onClick={() => !item.isPaid && setIsEditingValue(true)} 
-                  className={`text-[18px] font-black tracking-tighter cursor-text block leading-none pl-1 ${item.isPaid ? 'text-slate-700' : accentColor}`}
+                  className={`text-[20px] font-black tracking-tighter cursor-text block leading-none pl-1 ${item.isPaid ? 'text-slate-700' : accentColor}`}
                 >
                   {formatValue(item.value)}
                 </span>
@@ -170,8 +170,8 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
             </div>
           </div>
 
-          {/* Vencimento - mt-[-4px] para extrema proximidade ao valor */}
-          <div className="mt-[-4px] flex justify-start">
+          {/* Vencimento */}
+          <div className="mt-[-6px] flex justify-start">
             <CustomDatePicker 
               value={item.dueDate || ''}
               onChange={(newDate) => onUpdate({ dueDate: newDate })}
@@ -186,8 +186,8 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
                         : 'bg-slate-900/40 text-slate-500 hover:border-slate-700/60 active:border-slate-700'
                   }`}
                 >
-                  <Icons.Clock size={11} className={isExpired ? 'animate-pulse' : ''} />
-                  <span className="text-[11px] font-black uppercase tracking-wider">
+                  <Icons.Clock size={12} className={isExpired ? 'animate-pulse' : ''} />
+                  <span className="text-[12px] font-black uppercase tracking-wider">
                     {item.dueDate && item.dueDate !== 'none' 
                       ? new Date(item.dueDate + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })
                       : 'S/ DATA'}

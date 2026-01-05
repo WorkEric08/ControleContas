@@ -93,6 +93,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     setItemValue(new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2 }).format(val));
   };
 
+  const hasOnlyOneItem = category.items.length === 1;
+
   return (
     <div className="bg-[#0c121e] border border-slate-800/60 rounded-2xl shadow-2xl flex flex-col h-full relative overflow-hidden select-none transition-all hover:border-slate-700/80">
       
@@ -125,7 +127,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 
       <div className="p-7 pt-12 flex flex-col h-full">
         {/* Header (Ações) */}
-        <div className="flex items-center mb-6 justify-end">
+        <div className={`flex items-center justify-end ${hasOnlyOneItem ? 'mb-4' : 'mb-6'}`}>
           <div className="flex items-center gap-1 shrink-0">
              <div className="flex items-center gap-0.5 mr-1 opacity-30 hover:opacity-100 transition-opacity">
               <button disabled={isFirst} onClick={() => onMove?.('up')} className={`p-1 transition-all ${isFirst ? 'opacity-10 cursor-default' : 'text-slate-500 hover:text-white'}`}>
@@ -173,7 +175,11 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           {isStatsVisible && (
             <motion.div 
               initial={{ height: 0, opacity: 0, marginBottom: 0 }}
-              animate={{ height: 'auto', opacity: 1, marginBottom: 20 }}
+              animate={{ 
+                height: 'auto', 
+                opacity: 1, 
+                marginBottom: hasOnlyOneItem ? 16 : 24 
+              }}
               exit={{ height: 0, opacity: 0, marginBottom: 0 }}
               className="bg-[#050912]/60 border border-slate-700/40 rounded-2xl p-5 px-3 -mx-[15px] overflow-hidden"
             >
@@ -244,7 +250,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         </AnimatePresence>
 
         {/* LISTA DE ITENS */}
-        <div className="flex-1 mb-4 flex flex-col min-h-[150px]">
+        <div className={`flex-1 flex flex-col ${hasOnlyOneItem ? 'mb-6 min-h-fit' : 'mb-8 min-h-[150px]'}`}>
           <AnimatePresence mode="popLayout">
             {category.items.length === 0 ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center justify-center py-12 flex-1">
@@ -270,15 +276,15 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           </AnimatePresence>
         </div>
 
-        {/* RODAPÉ ESTATÍSTICO */}
-        <div className="pt-6 border-t border-slate-800/40 flex items-center justify-between mt-auto">
+        {/* RODAPÉ ESTATÍSTICO - Valores reduzidos para text-lg (18px) */}
+        <div className={`border-t border-slate-800/40 flex items-center justify-between mt-auto ${hasOnlyOneItem ? 'pt-6' : 'pt-8'}`}>
           <div className="space-y-1">
             <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.15em]">{isGoal ? 'Faltam' : 'Pendente'}</p>
-            <p className={`text-xl font-black ${isGoal ? 'text-blue-500' : 'text-emerald-500'}`}>R$ {pendingTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+            <p className={`text-lg font-black ${isGoal ? 'text-blue-500' : 'text-emerald-500'}`}>R$ {pendingTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
           </div>
           <div className="space-y-1 text-right">
             <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.15em]">{isGoal ? 'Guardado' : 'Total Pago'}</p>
-            <p className="text-xl font-black text-white">R$ {paidTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+            <p className="text-lg font-black text-white">R$ {paidTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
           </div>
         </div>
       </div>
