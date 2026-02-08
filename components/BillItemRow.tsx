@@ -78,7 +78,7 @@ const BillItemRow: React.FC<BillItemRowProps> = ({
       {/* Barra de Status Lateral */}
       <div className={`absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full ${accentBg}`}></div>
 
-      {/* 1. Título da Conta - Agora em Slate-400 (Cinza) */}
+      {/* 1. Título da Conta - Agora em Slate-400 (Cinza) para um visual moderno */}
       <div className="w-full mb-0">
         {isEditingText ? (
           <input 

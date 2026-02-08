@@ -15,7 +15,6 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user, onSa
   const [formData, setFormData] = useState<UserProfile>(user);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Garante que o estado local do formulário reflita o usuário atual sempre que o modal abrir
   useEffect(() => {
     if (isOpen) {
       setFormData(user);
@@ -57,19 +56,23 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user, onSa
         className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 shadow-2xl overflow-hidden"
       >
         <div className="flex flex-col items-center mb-8">
-          <div className="relative group cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-            <div className="w-32 h-32 rounded-[2.5rem] bg-slate-100 dark:bg-slate-800 border-4 border-white dark:border-slate-900 overflow-hidden shadow-xl transition-transform group-hover:scale-105">
+          {/* Container do Avatar - Removido scale/rotate para estabilidade total */}
+          <div className="relative cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+            <div className="w-32 h-32 rounded-[2.5rem] bg-slate-100 dark:bg-slate-800/50 border-4 border-white dark:border-slate-900 overflow-hidden shadow-xl">
               {formData.avatar ? (
                 <img src={formData.avatar} alt="Avatar" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-slate-400">
+                <div className="w-full h-full flex items-center justify-center text-slate-500/50">
                   <Icons.User size={48} />
                 </div>
               )}
             </div>
-            <div className="absolute -right-2 -bottom-2 bg-emerald-500 text-slate-950 p-3 rounded-2xl shadow-lg border-4 border-white dark:border-slate-900 group-hover:rotate-12 transition-transform">
+            
+            {/* Botão de "+" Estático e Estilizado */}
+            <div className="absolute -right-1 -bottom-1 bg-emerald-500 text-slate-950 p-2.5 rounded-[1.2rem] shadow-lg border-[5px] border-white dark:border-slate-900 transition-colors hover:bg-emerald-400">
               <Icons.Plus size={18} />
             </div>
+            
             <input 
               type="file" 
               ref={fileInputRef} 
@@ -78,6 +81,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user, onSa
               onChange={handleImageChange}
             />
           </div>
+          
           <h2 className="mt-6 text-xl font-black dark:text-white text-slate-900 uppercase tracking-widest">Seu Perfil</h2>
           <p className="text-slate-500 text-[10px] font-bold uppercase tracking-[0.2em] mt-1">Personalize sua experiência</p>
         </div>
